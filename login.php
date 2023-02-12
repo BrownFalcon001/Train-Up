@@ -60,7 +60,7 @@
                                                     Me</label>
                                             </div>
                                         </div>
-                                        <a href="trainee_dashboard.html" class="btn btn-success btn-user btn-block">
+                                        <a href="dashboard.html" class="btn btn-success btn-user btn-block">
                                             Login
                                         </a>
                                         <!-- <hr> -->
