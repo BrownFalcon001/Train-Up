@@ -37,34 +37,54 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
       <!-- Sidebar -->
-      <ul class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion" id="accordionSidebar">
-
+      <ul
+        class="navbar-nav bg-gradient-success sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+      >
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-          <div class="sidebar-brand-icon ">
-              <img id="tbl_logo" src="img/tbl-logo.png" alt="tbl-logo" width="100%">
+        <a
+          class="sidebar-brand d-flex align-items-center justify-content-center"
+          href="#"
+        >
+          <div class="sidebar-brand-icon">
+            <img
+              id="tbl_logo"
+              src="img/tbl-logo.png"
+              alt="tbl-logo"
+              width="100%"
+            />
           </div>
           <!-- <div class="sidebar-brand-text mx-3">TBL</div> -->
-      </a>
+        </a>
 
         <!-- Divider -->
-        <hr class="sidebar-divider my-0">
-        
+        <hr class="sidebar-divider my-0" />
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item">
-            <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                aria-expanded="true" aria-controls="collapseTwo">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <!-- <h6 class="collapse-header">Custom Components:</h6> -->
-                    <a class="collapse-item" href="dashboard.html">HR</a>
-                    <!-- <a class="collapse-item" href="cards.html">Cards</a> -->
-                </div>
+          <a
+            class="nav-link"
+            href="#"
+            data-toggle="collapse"
+            data-target="#collapseTwo"
+            aria-expanded="true"
+            aria-controls="collapseTwo"
+          >
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+          <div
+            id="collapseTwo"
+            class="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div class="bg-white py-2 collapse-inner rounded">
+              <!-- <h6 class="collapse-header">Custom Components:</h6> -->
+              <a class="collapse-item" href="dashboard.php">HR</a>
+              <!-- <a class="collapse-item" href="cards.html">Cards</a> -->
             </div>
+          </div>
         </li>
 
         <!-- <li class="nav-item active">
@@ -73,59 +93,58 @@
                 <span>Dashboard</span></a>
         </li> -->
 
-        
-
-        
-
         <!-- Divider -->
-        <hr class="sidebar-divider">
+        <hr class="sidebar-divider" />
 
         <!-- Heading -->
-        <div class="sidebar-heading">
-            Pages
-        </div>
+        <div class="sidebar-heading">Pages</div>
 
         <!-- Nav Item - Charts -->
         <li class="nav-item">
-            <a class="nav-link" href="new_application.html">
-                <i class="fas fa-fw fa-envelope"></i>
-                <span>New Applications</span></a>
+          <a class="nav-link" href="new_application.php">
+            <i class="fas fa-fw fa-envelope"></i>
+            <span>New Applications</span></a
+          >
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="pending_application.html">
-                <i class="fas fa-fw fa-spinner"></i>
-                <span>Pending Applications</span></a>
+          <a class="nav-link" href="pending_application.html">
+            <i class="fas fa-fw fa-spinner"></i>
+            <span>Pending Applications</span></a
+          >
         </li>
         <li class="nav-item active">
-            <a class="nav-link" href="present_trainee.html">
-                <i class="fas fa-fw fa-list"></i>
-                <span>Present Trainee</span></a>
+          <a class="nav-link" href="present_trainee.html">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Present Trainee</span></a
+          >
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="trainee_history.html">
-                <i class="fas fa-fw fa-list"></i>
-                <span>Trainee History</span></a>
+          <a class="nav-link" href="trainee_history.html">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Trainee History</span></a
+          >
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="certificate_issue.html">
-                <i class="fas fa-fw fa-certificate"></i>
-                <span>Certifiacte Issue</span></a>
+          <a class="nav-link" href="certificate_issue.html">
+            <i class="fas fa-fw fa-certificate"></i>
+            <span>Certifiacte Issue</span></a
+          >
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="allowance.html">
-                <i class="fas fa-fw fa-gift"></i>
-                <span>Allowance</span></a>
+          <a class="nav-link" href="allowance.html">
+            <i class="fas fa-fw fa-gift"></i>
+            <span>Allowance</span></a
+          >
         </li>
         <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block">
+        <hr class="sidebar-divider d-none d-md-block" />
 
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+          <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-
-    </ul>
+      </ul>
       <!-- End of Sidebar -->
 
       <!-- Content Wrapper -->
@@ -461,7 +480,6 @@
                         <th>Gender</th>
                         <th>Division</th>
                         <th>Trainee Details</th>
-                        
                       </tr>
                     </thead>
                     <tfoot>
@@ -471,7 +489,6 @@
                         <th>Gender</th>
                         <th>Division</th>
                         <th>Trainee Details</th>
-                        
                       </tr>
                     </tfoot>
                     <tbody>
@@ -480,8 +497,14 @@
                         <td>Northern University</td>
                         <td>Male</td>
                         <td>IT</td>
-                        <td><button class='delete btn btn-sm btn-primary' id=" . $row['USERNAME'] . ">Details</button></td>
-                        
+                        <td>
+                          <button
+                            class="delete btn btn-sm btn-primary"
+                            id=" . $row['USERNAME'] . "
+                          >
+                            Details
+                          </button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -496,11 +519,14 @@
         <!-- Footer -->
         <footer class="sticky-footer bg-white">
           <div class="container my-auto">
-              <div class="copyright text-center my-auto">
-                  <span>Copyright &copy; 2020 Trust Bank Ltd. All rights reserved.</span>
-              </div>
+            <div class="copyright text-center my-auto">
+              <span
+                >Copyright &copy; 2020 Trust Bank Ltd. All rights
+                reserved.</span
+              >
+            </div>
           </div>
-      </footer>
+        </footer>
         <!-- End of Footer -->
       </div>
       <!-- End of Content Wrapper -->
@@ -545,7 +571,7 @@
             >
               Cancel
             </button>
-            <a class="btn btn-primary" href="login.html">Logout</a>
+            <a class="btn btn-primary" href="login.php">Logout</a>
           </div>
         </div>
       </div>

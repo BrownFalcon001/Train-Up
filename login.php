@@ -1,3 +1,39 @@
+<?php
+session_start();
+$servername = 'localhost';
+$username = 'root';
+$password = '';
+$dbname = 'train_up';
+$loginsuccess = true;
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if(isset($_POST['id']) && isset($_POST['password'])) {
+    $id = $_POST['id'];
+    $password = $_POST['password'];
+    $sql = "SELECT *
+    FROM `user_profile`
+    WHERE `employee_id` = '$id' and `password` = '$password'";
+    $result = mysqli_query($conn, $sql);
+    if($row = mysqli_fetch_assoc($result)) {
+      $_SESSION['id'] = $id;
+      $_SESSION['designation'] = $row['ROLE'];
+      header("Location: dashboard.php");
+      
+    }
+    else {
+      $loginsuccess = false;
+    }
+  }
+
+}
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +59,6 @@
 </head>
 
 <body class="bg-gradient-success">
-
     <div class="container">
 
         <!-- Outer Row -->
@@ -43,26 +78,37 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" action="login.php" method="POST">
                                         <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
+                                            <input type="text" class="form-control form-control-user"
+                                                name="id"
+                                                id="id" aria-describedby="emailHelp"
                                                 placeholder="User ID">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user"
-                                                id="exampleInputPassword" placeholder="Password">
+                                                name="password"
+                                                id="password" placeholder="Password">
                                         </div>
-                                        <div class="form-group">
+                                        <!-- <div class="form-group">
                                             <div class="custom-control custom-checkbox small">
                                                 <input type="checkbox" class="custom-control-input" id="customCheck">
                                                 <label class="custom-control-label" for="customCheck">Remember
                                                     Me</label>
                                             </div>
-                                        </div>
-                                        <a href="dashboard.html" class="btn btn-success btn-user btn-block">
-                                            Login
-                                        </a>
+                                        </div> -->
+                                        <?php
+                                          if($loginsuccess == false) {
+                                            echo '
+                                              <div class="form-group">
+                                                <p style="color:red"> Wrong Info </p>
+                                              </div>
+                                            ';
+                                          }
+                                          
+                                        ?>
+                                        
+                                        <button type="submit" class="btn btn-success btn-user btn-block">Login</button>
                                         <!-- <hr> -->
                                         <!-- <a href="index.html" class="btn btn-google btn-user btn-block">
                                             <i class="fab fa-google fa-fw"></i> Login with Google
