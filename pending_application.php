@@ -19,6 +19,7 @@
   if($row = mysqli_fetch_assoc($result)) {
     
   }
+  $div = $row['DIVISION'];
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     $id = $_POST["username"];
@@ -126,6 +127,9 @@
               >
                 <?php
                   echo $row['ROLE'];
+                  if($row['ROLE'] != "HR") {
+                    echo '(' . $row['DIVISION'] . ')';
+                  }
                 ?>
               </a>
               <!-- <a class="collapse-item" href="cards.html">Cards</a> -->
@@ -376,9 +380,17 @@
                     </tfoot>
                     <tbody>
                       <?php
-                        $sql = "SELECT *
-                        FROM `intern` natural join `user_profile`
-                        WHERE (`CURRENT_STATUS` = 'Pending' or `CURRENT_STATUS` = 'Approved' or `CURRENT_STATUS` = 'Rejected') and `Offer_letter` = 0";
+                        if($row['ROLE'] == "HR") {
+                          $sql = "SELECT *
+                          FROM `intern` natural join `user_profile`
+                          WHERE (`CURRENT_STATUS` = 'Pending' or `CURRENT_STATUS` = 'Approved' or `CURRENT_STATUS` = 'Rejected') and `Offer_letter` = 0";
+                        }
+                        else if($row['ROLE'] == "Head of Division") {
+                          $sql = "SELECT *
+                          FROM `intern` natural join `user_profile`
+                          WHERE `CURRENT_STATUS` = 'Approved' and `Offer_letter` = 1 and  `SUPERVISOR` = 0  and `DIVISION` = '$div'";
+                        }
+                        
                         $result = mysqli_query($conn, $sql);
                         $cnt = 0;
                         while($row = mysqli_fetch_assoc($result)) {

@@ -18,6 +18,7 @@
   if($row = mysqli_fetch_assoc($result)) {
     
   }
+  $div = $row['DIVISION'];
 
 ?>
 <!DOCTYPE html>
@@ -117,6 +118,9 @@
               >
                 <?php
                   echo $row['ROLE'];
+                  if($row['ROLE'] != "HR") {
+                    echo '(' . $row['DIVISION'] . ')';
+                  }
                 ?>
 
               </a>
@@ -144,12 +148,19 @@
             <span>New Applications</span></a
           >
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pending_application.php">
-            <i class="fas fa-fw fa-spinner"></i>
-            <span>Pending Applications</span></a
-          >
-        </li>
+        <?php
+          if($row['ROLE'] == "HR") {
+            echo '
+            <li class="nav-item">
+              <a class="nav-link" href="pending_application.php">
+                <i class="fas fa-fw fa-spinner"></i>
+                <span>Pending Applications</span></a
+              >
+            </li>
+      
+            ';
+          }
+        ?>
         <li class="nav-item active">
           <a class="nav-link" href="present_trainee.php">
             <i class="fas fa-fw fa-list"></i>
@@ -352,7 +363,13 @@
                     </tfoot>
                     <tbody>
                      <?php
-                        $sql = "SELECT * FROM `intern` natural join `user_profile` WHERE `START_DATE` <= CURDATE() and `END_DATE` > CURDATE() AND `CURRENT_STATUS` = 'Approved'";
+                        if($row['ROLE'] == "HR") {
+                          $sql = "SELECT * FROM `intern` natural join `user_profile` WHERE `START_DATE` <= CURDATE() and `END_DATE` > CURDATE() AND `CURRENT_STATUS` = 'Approved'";
+                        }
+                        else if($row['ROLE'] == "Head of Division") {
+                          $sql = "SELECT * FROM `intern` natural join `user_profile` WHERE `START_DATE` <= CURDATE() and `END_DATE` > CURDATE() AND `CURRENT_STATUS` = 'Approved' and `DIVISION` = '$div';";
+                        }
+                        
                         $result = mysqli_query($conn, $sql);
                         $cnt = 0;
                         while($row = mysqli_fetch_assoc($result)) {

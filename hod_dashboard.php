@@ -18,6 +18,7 @@
   if($row = mysqli_fetch_assoc($result)) {
     
   }
+  $div = $row['DIVISION'];
 
 ?>
 
@@ -102,6 +103,10 @@
               <a class="collapse-item active" href="#">
                 <?php
                   echo $row['ROLE'];
+                  if($row['ROLE'] != "HR") {
+                    echo '(' . $row['DIVISION'] . ')';
+                  }
+                    
                 ?>
               </a>
               <!-- <a class="collapse-item" href="cards.html">Cards</a> -->
@@ -128,12 +133,19 @@
             <span>New Applications</span></a
           >
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pending_application.php">
-            <i class="fas fa-fw fa-spinner"></i>
-            <span>Pending Applications</span></a
-          >
-        </li>
+        <?php
+          if($row['ROLE'] == "HR") {
+            echo '
+            <li class="nav-item">
+              <a class="nav-link" href="pending_application.php">
+                <i class="fas fa-fw fa-spinner"></i>
+                <span>Pending Applications</span></a
+              >
+            </li>
+      
+            ';
+          }
+        ?>
         <li class="nav-item">
           <a class="nav-link" href="present_trainee.php">
             <i class="fas fa-fw fa-list"></i>
@@ -296,8 +308,8 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
                           <?php
                             $sql = "SELECT *
-                            FROM `intern`
-                            WHERE `CURRENT_STATUS` = 'New'";
+                            FROM `intern` natural join `user_profile`
+                            WHERE `CURRENT_STATUS` = 'Pending' and `DIVISION` = '$div'" ;
                             $result = mysqli_query($conn, $sql);
                             $cnt = 0;
                             while($row = mysqli_fetch_assoc($result)) {
@@ -356,67 +368,7 @@
               </div>
 
               <!-- Earnings (Monthly) Card Example -->
-              <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                  <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                      <div class="col mr-2">
-                        <div
-                          class="text-xs font-weight-bold text-primary text-uppercase mb-1"
-                        >
-                          Pending Applicantion
-                        </div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <?php
-                          $sql = "SELECT *
-                        FROM `intern` natural join `user_profile`
-                        WHERE (`CURRENT_STATUS` = 'Pending' or `CURRENT_STATUS` = 'Approved' or `CURRENT_STATUS` = 'Rejected') and `Offer_letter` = 0";
-                          $result = mysqli_query($conn, $sql);
-                          $cnt = 0;
-                          while($row = mysqli_fetch_assoc($result)) {
-                            $cnt = $cnt+1;
-                          }
-                          echo $cnt;
-                        ?>
-                        </div>
-                      </div>
-                      <!-- <i class="fa-solid fa-bookmark"></i> -->
-                      <div class="col-auto">
-                        <ul class="navbar-nav ml-auto">
-                          <li class="nav-item dropdown no-arrow mx-1">
-                            <a
-                              class="nav-link dropdown-toggle"
-                              href="#"
-                              id="alertsDropdown"
-                              role="button"
-                              data-toggle="dropdown"
-                              aria-haspopup="true"
-                              aria-expanded="false"
-                            >
-                              <i class="fas fa-spinner fa-fw fa-2x"></i>
-                              <!-- Counter - Alerts -->
-                              <!-- <span class="badge badge-danger badge-counter"
-                                >3+</span
-                              > -->
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <a
-                  href="pending_application.php"
-                  class="small-box-footer"
-                  style="text-decoration: none"
-                >
-                  <div
-                    class="d-flex justify-content-center bg-secondary text-white shadow rounded-bottom"
-                  >
-                    More info<i class="fas fa-arrow-circle-right"></i>
-                  </div>
-                </a>
-              </div>
+              
 
               <!-- Earnings (Monthly) Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
@@ -436,7 +388,7 @@
                             >
                             <?php
                               // SELECT * FROM my_table WHERE date_column > CURDATE();
-                              $sql = "SELECT * FROM `intern` WHERE `START_DATE` <= CURDATE() and `END_DATE` > CURDATE() AND `CURRENT_STATUS` = 'Approved';";
+                              $sql = "SELECT * FROM `intern` natural join `user_profile` WHERE `START_DATE` <= CURDATE() and `END_DATE` > CURDATE() AND `CURRENT_STATUS` = 'Approved' and `DIVISION` = '$div';";
                               $result = mysqli_query($conn, $sql);
                               $cnt = 0;
                               while($row = mysqli_fetch_assoc($result)) {
@@ -503,7 +455,7 @@
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
                           <?php
                             // SELECT * FROM my_table WHERE date_column > CURDATE();
-                            $sql = "SELECT * FROM `intern` WHERE `START_DATE` <= CURDATE() and `END_DATE` <= CURDATE() AND `CURRENT_STATUS` = 'Approved';";
+                            $sql = "SELECT * FROM `intern` natural join `user_profile` WHERE `START_DATE` <= CURDATE() and `END_DATE` <= CURDATE() AND `CURRENT_STATUS` = 'Approved' and `DIVISION` = '$div';";
                             $result = mysqli_query($conn, $sql);
                             $cnt = 0;
                             while($row = mysqli_fetch_assoc($result)) {
@@ -544,6 +496,9 @@
                     More info<i class="fas fa-arrow-circle-right"></i>
                   </div>
                 </a>
+              </div>
+              <div class="col-xl-3 col-md-6 mb-4">
+                
               </div>
             </div>
             

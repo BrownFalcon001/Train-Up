@@ -5,6 +5,7 @@
   $password = '';
   $dbname = 'train_up';
   $forward = false;
+  $reject = false;
   // Create connection
   $conn = new mysqli($servername, $username, $password, $dbname);
   // Check connection
@@ -19,13 +20,39 @@
   if($row = mysqli_fetch_assoc($result)) {
     
   }
+  $div = $row['DIVISION'];
   // echo var_dump($row);
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = $_POST["username"];
-    $sql = "UPDATE `intern` SET `CURRENT_STATUS` = 'Pending' WHERE `intern`.`EMPLOYEE_ID` = $id;";
-    $result = mysqli_query($conn, $sql);
-    $forward = true;
+    
+    
+    if($row['ROLE'] == 'HR') {
+      $id = $_POST["username"];
+      $sql = "UPDATE `intern` SET `CURRENT_STATUS` = 'Pending' WHERE `intern`.`EMPLOYEE_ID` = $id;";
+      $result = mysqli_query($conn, $sql);
+      $forward = true;
+    }
+    else if($row['ROLE'] == 'Head of Division') {
+      if($_POST['username'] == "") {
+        // approve
+        $id = $_POST["username1"];
+        $st_date=$_POST["st_date"];
+        $en_date=$_POST["en_date"];
+        $supervisor=$_POST["supervisor"];
+        $sql = "UPDATE `intern` SET `SUPERVISOR` = $supervisor, `START_DATE` = '$st_date', `END_DATE` = '$en_date' WHERE `intern`.`EMPLOYEE_ID` = $id;";
+        $result = mysqli_query($conn, $sql);
+
+      }
+      else {
+        // reject
+        $id = $_POST["username"];
+        $sql = "UPDATE `intern` SET `CURRENT_STATUS` = 'Rejected' WHERE `intern`.`EMPLOYEE_ID` = $id;";
+        $result = mysqli_query($conn, $sql);
+        $reject = true;
+      }
+    }
+    
   }
+
 
 ?>
 
@@ -128,6 +155,9 @@
               >
                 <?php
                   echo $row['ROLE'];
+                  if($row['ROLE'] != "HR") {
+                    echo '(' . $row['DIVISION'] . ')';
+                  }
                 ?>
               </a>
               <!-- <a class="collapse-item" href="cards.html">Cards</a> -->
@@ -154,12 +184,20 @@
             <span>New Applications</span></a
           >
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="pending_application.php">
-            <i class="fas fa-fw fa-spinner"></i>
-            <span>Pending Applications</span></a
-          >
-        </li>
+        <?php
+          if($row['ROLE'] == "HR") {
+            echo '
+            <li class="nav-item">
+              <a class="nav-link" href="pending_application.php">
+                <i class="fas fa-fw fa-spinner"></i>
+                <span>Pending Applications</span></a
+              >
+            </li>
+      
+            ';
+          }
+        ?>
+        
         <li class="nav-item">
           <a class="nav-link" href="present_trainee.php">
             <i class="fas fa-fw fa-list"></i>
@@ -207,6 +245,16 @@
               echo '
               <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>Application Successfully Forwarded</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              ';
+            }
+            else if($reject == true) {
+              echo '
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Application Rejected</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -362,7 +410,7 @@
                         <th>Gender</th>
                         <th>Division</th>
                         <th>Application Details</th>
-                        <th>Forward</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tfoot>
@@ -372,16 +420,25 @@
                         <th>Gender</th>
                         <th>Division</th>
                         <th>Application Details</th>
-                        <th>Forward</th>
+                        <th>Action</th>
                       </tr>
                     </tfoot>
                     <tbody>
                       <?php
-                        $sql = "SELECT *
-                        FROM `intern` natural join `user_profile`
-                        WHERE `CURRENT_STATUS` = 'New' and `DIVISION` = 'IT'";
+                        if($row['ROLE'] == "HR") {
+                          $sql = "SELECT *
+                          FROM `intern` natural join `user_profile`
+                          WHERE `CURRENT_STATUS` = 'New'";
+                        }
+                        else if($row['ROLE'] == "Head of Division") {
+                          $sql = "SELECT *
+                          FROM `intern` natural join `user_profile`
+                          WHERE `CURRENT_STATUS` = 'Pending' and `DIVISION` = '$div' and `SUPERVISOR` = 0" ;
+                        }
+                        
                         $result = mysqli_query($conn, $sql);
                         $cnt = 0;
+                        $role = $row['ROLE'];
                         while($row = mysqli_fetch_assoc($result)) {
                           echo '
                           <tr>
@@ -399,8 +456,10 @@
                                 Details
                               </button>
                             </td>
-                            <td>
+                            <td>';
 
+                            if($role == 'HR') {
+                              echo '
                               <button
                                 class="forward btn btn-sm btn-success"
                                 id=" . $row["USERNAME"] . "
@@ -409,7 +468,30 @@
                               >
                                 Forward
                               </button>
-                            </td>
+                              ';
+                            }
+                            else if($role == 'Head of Division') {
+                              echo '
+                              <button
+                                class="approve btn btn-sm btn-success"
+                                id=" . $row["USERNAME"] . "
+                                data-toggle="modal"
+                                data-target="#approveModal"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                class="reject btn btn-sm btn-danger"
+                                id=" . $row["USERNAME"] . "
+                                data-toggle="modal"
+                                data-target="#rejectModal"
+                              >
+                                Reject
+                              </button>  
+                              ';
+                            }
+                              
+                            echo '</td>
                           </tr>
                           ';
 
@@ -530,6 +612,115 @@
         </div>
       </div>
     </div>
+
+    <!-- Approve Modal -->
+    <div
+      class="modal fade"
+      id="approveModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Approve the Application?</h5>
+            <button
+              class="close"
+              type="button"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <form action="new_application.php" method="POST" class="test">
+            <div class="modal-body">
+            
+              <div class="row">
+                <div class="col">
+                  <input type="text" class="form-control" id="st_date" name="st_date" placeholder="Internship starting date">
+                </div>
+                <div class="col">
+                  <input type="text" id="en_date" name="en_date" class="form-control" placeholder="Ending date">
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col">
+                  <input type="text" class="form-control" id="supervisor" name="supervisor" placeholder="Supervisor">
+                </div>
+                
+              </div>
+            
+              Select "Approve" below if you want to approve the application.
+            </div>
+            <div class="modal-footer">
+              <button
+                class="btn btn-secondary"
+                type="button"
+                data-dismiss="modal"
+              >
+                Cancel
+              
+              </button>
+              <input class="username1" type="hidden" name="username" id="username1">
+              <input class="username2" type="hidden" name="username1" id="username2">
+              <button type="submit" class="btn btn-success btn-user">Approve</button>
+            
+            <!-- <a class="btn btn-primary" href="login.php">Forward</a> -->
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div
+      class="modal fade"
+      id="rejectModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Reject the Application?</h5>
+            <button
+              class="close"
+              type="button"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Select "Reject" below if you want to reject the application.
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-dismiss="modal"
+            >
+              Cancel
+            
+            </button>
+            <form action="new_application.php" method="POST" class="test">
+              <input class="username3" type="hidden" name="username" id="username3">
+              <input class="username4" type="hidden" name="username1" id="username4">
+              <button type="submit" class="btn btn-danger btn-user btn-block">Reject</button>
+            </form>
+            <!-- <a class="btn btn-primary" href="login.php">Forward</a> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       forward = document.getElementsByClassName('forward');
       // console.log(forward);
@@ -538,6 +729,27 @@
           tr = e.target.parentNode.parentNode;
           x = tr.getElementsByTagName("input")[0];
           username.value = x.value;
+          
+        })
+      })
+      reject = document.getElementsByClassName('reject');
+      // ;
+      Array.from(reject).forEach((element) => {
+        element.addEventListener("click", (e) => {
+          tr = e.target.parentNode.parentNode;
+          x = tr.getElementsByTagName("input")[0];
+          username3.value = x.value;
+          
+        })
+      })
+      
+      approve = document.getElementsByClassName('approve');
+      // ;
+      Array.from(approve).forEach((element) => {
+        element.addEventListener("click", (e) => {
+          tr = e.target.parentNode.parentNode;
+          x = tr.getElementsByTagName("input")[0];
+          username2.value = x.value;
         })
       })
     </script>
