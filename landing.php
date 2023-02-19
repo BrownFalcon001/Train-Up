@@ -109,7 +109,7 @@
                         <div class="col-lg-4"></div>
                         <div class="col-lg-4">
                             <br>
-                            <a href="apply.html" class="btn btn-success btn-user btn-block">
+                            <a href="apply.php" class="btn btn-success btn-user btn-block">
                                 Apply For Internship!
                             </a>
                         </div>
