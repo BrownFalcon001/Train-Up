@@ -21,8 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = mysqli_query($conn, $sql);
     if($row = mysqli_fetch_assoc($result)) {
       $_SESSION['id'] = $id;
-      $_SESSION['designation'] = $row['ROLE'];
-      header("Location: dashboard.php");
+      if($row['ROLE'] == "HR") {
+        header("Location:  hr_dashboard.php");
+      }
+      else if($row['ROLE'] == "Head of Division") {
+        header("Location:  hod_dashboard.php");
+      }
+      
       
     }
     else {

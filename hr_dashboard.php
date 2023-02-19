@@ -10,7 +10,15 @@
   if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
   }
-  // echo(var_dump($_SESSION));
+  $id = $_SESSION['id'];
+  $sql = "SELECT *
+  FROM `user_profile`
+  WHERE `employee_id` = '$id'";
+  $result = mysqli_query($conn, $sql);
+  if($row = mysqli_fetch_assoc($result)) {
+    
+  }
+
 ?>
 
 <!DOCTYPE html>
@@ -93,7 +101,7 @@
               <!-- <h6 class="collapse-header">Custom Components:</h6> -->
               <a class="collapse-item active" href="#">
                 <?php
-                  echo $_SESSION['designation'];
+                  echo $row['ROLE'];
                 ?>
               </a>
               <!-- <a class="collapse-item" href="cards.html">Cards</a> -->
@@ -121,36 +129,31 @@
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="pending_application.html">
+          <a class="nav-link" href="pending_application.php">
             <i class="fas fa-fw fa-spinner"></i>
             <span>Pending Applications</span></a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="present_trainee.html">
+          <a class="nav-link" href="present_trainee.php">
             <i class="fas fa-fw fa-list"></i>
             <span>Present Trainee</span></a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="trainee_history.html">
+          <a class="nav-link" href="trainee_history.php">
             <i class="fas fa-fw fa-list"></i>
             <span>Trainee History</span></a
           >
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="certificate_issue.html">
+          <a class="nav-link" href="certificate_issue.php">
             <i class="fas fa-fw fa-certificate"></i>
             <span>Certifiacte Issue</span></a
           >
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="allowance.html">
-            <i class="fas fa-fw fa-gift"></i>
-            <span>Allowance</span></a
-          >
-        </li>
+        
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block" />
 
@@ -178,25 +181,7 @@
             </button>
 
             <!-- Topbar Search -->
-            <form
-              class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
-            >
-              <div class="input-group">
-                <input
-                  type="text"
-                  class="form-control bg-light border-0 small"
-                  placeholder="Search for..."
-                  aria-label="Search"
-                  aria-describedby="basic-addon2"
-                />
-                <div class="input-group-append">
-                  <button class="btn btn-success" type="button">
-                    <i class="fas fa-search fa-sm"></i>
-                  </button>
-                </div>
-              </div>
-            </form>
-
+            
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
               <!-- Nav Item - Search Dropdown (Visible Only XS) -->
@@ -250,7 +235,11 @@
                   aria-expanded="false"
                 >
                   <span class="mr-2 d-none d-lg-inline text-gray-600 small"
-                    >Douglas McGee</span
+                    >
+                  <?php
+                    echo $row['FIRST_NAME']. " " . $row['LAST_NAME'];
+                  ?>
+                  </span
                   >
                   <img
                     class="img-profile rounded-circle"
@@ -266,14 +255,7 @@
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     Profile
                   </a>
-                  <a class="dropdown-item" href="#">
-                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
-                  </a>
-                  <a class="dropdown-item" href="#">
-                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Activity Log
-                  </a>
+                  
                   <div class="dropdown-divider"></div>
                   <a
                     class="dropdown-item"
@@ -318,7 +300,17 @@
                           New Applications
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                          15
+                          <?php
+                            $sql = "SELECT *
+                            FROM `intern`
+                            WHERE `CURRENT_STATUS` = 'New'";
+                            $result = mysqli_query($conn, $sql);
+                            $cnt = 0;
+                            while($row = mysqli_fetch_assoc($result)) {
+                              $cnt = $cnt+1;
+                            }
+                            echo $cnt;
+                          ?>
                         </div>
                       </div>
                       <div class="col-auto">
@@ -335,9 +327,9 @@
                             >
                               <i class="fas fa-envelope fa-fw fa-2x"></i>
                               <!-- Counter - Alerts -->
-                              <span class="badge badge-danger badge-counter"
+                              <!-- <span class="badge badge-danger badge-counter"
                                 >3+</span
-                              >
+                              > -->
                             </a>
                           </li>
                         </ul>
@@ -381,7 +373,17 @@
                           Pending Applicantion
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                          10
+                        <?php
+                          $sql = "SELECT *
+                        FROM `intern` natural join `user_profile`
+                        WHERE (`CURRENT_STATUS` = 'Pending' or `CURRENT_STATUS` = 'Approved' or `CURRENT_STATUS` = 'Rejected') and `Offer_letter` = 0";
+                          $result = mysqli_query($conn, $sql);
+                          $cnt = 0;
+                          while($row = mysqli_fetch_assoc($result)) {
+                            $cnt = $cnt+1;
+                          }
+                          echo $cnt;
+                        ?>
                         </div>
                       </div>
                       <!-- <i class="fa-solid fa-bookmark"></i> -->
@@ -399,9 +401,9 @@
                             >
                               <i class="fas fa-spinner fa-fw fa-2x"></i>
                               <!-- Counter - Alerts -->
-                              <span class="badge badge-danger badge-counter"
+                              <!-- <span class="badge badge-danger badge-counter"
                                 >3+</span
-                              >
+                              > -->
                             </a>
                           </li>
                         </ul>
@@ -410,7 +412,7 @@
                   </div>
                 </div>
                 <a
-                  href="pending_application.html"
+                  href="pending_application.php"
                   class="small-box-footer"
                   style="text-decoration: none"
                 >
@@ -438,7 +440,16 @@
                             <div
                               class="h5 mb-0 mr-3 font-weight-bold text-gray-800"
                             >
-                              50
+                            <?php
+                              // SELECT * FROM my_table WHERE date_column > CURDATE();
+                              $sql = "SELECT * FROM `intern` WHERE `START_DATE` <= CURDATE() and `END_DATE` > CURDATE() AND `CURRENT_STATUS` = 'Approved';";
+                              $result = mysqli_query($conn, $sql);
+                              $cnt = 0;
+                              while($row = mysqli_fetch_assoc($result)) {
+                                $cnt = $cnt+1;
+                              }
+                              echo $cnt;
+                            ?>
                             </div>
                           </div>
                           <div class="col">
@@ -472,7 +483,7 @@
                   </div>
                 </div>
                 <a
-                  href="present_trainee.html"
+                  href="present_trainee.php"
                   class="small-box-footer"
                   style="text-decoration: none"
                 >
@@ -496,7 +507,16 @@
                           Trainee History
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                          18
+                          <?php
+                            // SELECT * FROM my_table WHERE date_column > CURDATE();
+                            $sql = "SELECT * FROM `intern` WHERE `START_DATE` <= CURDATE() and `END_DATE` <= CURDATE() AND `CURRENT_STATUS` = 'Approved';";
+                            $result = mysqli_query($conn, $sql);
+                            $cnt = 0;
+                            while($row = mysqli_fetch_assoc($result)) {
+                              $cnt = $cnt+1;
+                            }
+                            echo $cnt;
+                          ?>
                         </div>
                       </div>
                       <div class="col-auto">
@@ -520,7 +540,7 @@
                   </div>
                 </div>
                 <a
-                  href="trainee_history.html"
+                  href="trainee_history.php"
                   class="small-box-footer"
                   style="text-decoration: none"
                 >
@@ -545,7 +565,16 @@
                           Certificate Issue
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                          15
+                          <?php
+                            // SELECT * FROM my_table WHERE date_column > CURDATE();
+                            $sql = "SELECT * FROM `intern` WHERE `START_DATE` <= CURDATE() and `END_DATE` <= CURDATE() AND `CURRENT_STATUS` = 'Approved' and `CERTIFICATE`='0';";
+                            $result = mysqli_query($conn, $sql);
+                            $cnt = 0;
+                            while($row = mysqli_fetch_assoc($result)) {
+                              $cnt = $cnt+1;
+                            }
+                            echo $cnt;
+                          ?>
                         </div>
                       </div>
                       <div class="col-auto">
@@ -562,9 +591,9 @@
                             >
                               <i class="fas fa-certificate fa-fw fa-2x"></i>
                               <!-- Counter - Alerts -->
-                              <span class="badge badge-danger badge-counter"
+                              <!-- <span class="badge badge-danger badge-counter"
                                 >3+</span
-                              >
+                              > -->
                             </a>
                           </li>
                         </ul>
@@ -573,7 +602,7 @@
                   </div>
                 </div>
                 <a
-                  href="certificate_issue.html"
+                  href="certificate_issue.php"
                   class="small-box-footer"
                   style="text-decoration: none"
                 >
@@ -587,7 +616,7 @@
 
               <!-- Earnings (Monthly) Card Example -->
               <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-dark shadow h-100 py-2">
+                <!-- <div class="card border-left-dark shadow h-100 py-2">
                   <div class="card-body">
                     <div class="row no-gutters align-items-center">
                       <div class="col mr-2">
@@ -613,10 +642,8 @@
                               aria-expanded="false"
                             >
                               <i class="fas fa-gift fa-fw fa-2x"></i>
-                              <!-- Counter - Alerts -->
-                              <span class="badge badge-danger badge-counter"
-                                >3+</span
-                              >
+                             
+                             
                             </a>
                           </li>
                         </ul>
@@ -625,7 +652,7 @@
                   </div>
                 </div>
                 <a
-                  href="allowance.html"
+                  href="allowance.php"
                   class="small-box-footer"
                   style="text-decoration: none"
                 >
@@ -634,7 +661,7 @@
                   >
                     More info<i class="fas fa-arrow-circle-right"></i>
                   </div>
-                </a>
+                </a> -->
               </div>
 
               <!-- Earnings (Monthly) Card Example -->
